@@ -1,8 +1,3 @@
-Here’s a polished, professional **README.md** ready for GitHub, based on your project description.
-If you want, I can also format it with badges, screenshots, or a table of contents.
-
----
-
 # Pathfinding Algorithm Visualizer
 
 A modern, interactive web application that brings pathfinding algorithms to life.
