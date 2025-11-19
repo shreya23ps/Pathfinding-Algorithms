@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pathfinding Visualizer - Learn Algorithms Easily</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    
+    
+</head>
+<body class="dark-mode">
+    <div class="container">
+        <header>
+            <div class="header-left">
+                <h1>Pathfinding Algorithm Visualizer</h1>
+                <p class="subtitle">Learn how pathfinding algorithms work - No coding experience required!</p>
+            </div>
+            <button class="theme-toggle" id="theme-toggle">
+                <i class="fas fa-sun"></i> Light Mode
+            </button>
+        </header>
+
+        <div class="main-content">
+            <section class="visualization-section">
+                <h2 class="section-title">Visualization</h2>
+                
+                <!-- NEW: Horizontal Legend Above Grid -->
+                <div class="legend-container">
+                    <h3 class="legend-title"><i class="fas fa-info-circle"></i> Legend</h3>
+                    <div class="legend-horizontal">
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--start-color);"></div>
+                            <span>Start Node</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--end-color);"></div>
+                            <span>End Node</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--wall-color);"></div>
+                            <span>Wall Node</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--visited-color);"></div>
+                            <span>Visited Node</span>
+                        </div>
+                        <div class="legend-item">
+                            <div class="legend-color" style="background-color: var(--path-color);"></div>
+                            <span>Shortest Path</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="grid-container">
+                    <div class="grid" id="grid"></div>
+                </div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="path-length">0</div>
+                        <div class="stat-label">Path Length</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="visited-nodes">0</div>
+                        <div class="stat-label">Visited Nodes</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="time-taken">0 ms</div>
+                        <div class="stat-label">Time Taken</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="algorithm-name">A*</div>
+                        <div class="stat-label">Current Algorithm</div>
+                    </div>
+                </div>
+
+                <div class="instructions">
+                    <h4><i class="fas fa-graduation-cap"></i> How to Use:</h4>
+                    <ul>
+                        <li><strong>Click and drag</strong> to add or remove walls</li>
+                        <li><strong>Drag the green/red nodes</strong> to move start and end points</li>
+                        <li>Select an algorithm and click <strong>"Visualize"</strong> to see it in action</li>
+                        <li>Use <strong>"Clear Path"</strong> to try another algorithm</li>
+                        <li>Adjust the <strong>speed slider</strong> to make visualization faster or slower</li>
+                    </ul>
+                </div>
+
+            </section>
+
+            <section class="controls-section">
+                <div class="control-group">
+                    <h3><i class="fas fa-project-diagram"></i> Choose Algorithm</h3>
+                    <div class="button-group">
+                        <button id="astar-btn" class="active">
+                            <i class="fas fa-star"></i> A* Search
+                        </button>
+                        <button id="dijkstra-btn">
+                            <i class="fas fa-road"></i> Dijkstra
+                        </button>
+                        <button id="bfs-btn">
+                            <i class="fas fa-expand"></i> BFS
+                        </button>
+                    </div>
+                    <div class="difficulty-indicator">
+                        <span>Difficulty:</span>
+                        <div class="difficulty-dot easy"></div>
+                        <span>Easy</span>
+                        <div class="difficulty-dot medium"></div>
+                        <span>Medium</span>
+                        <div class="difficulty-dot hard"></div>
+                        <span>Hard</span>
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-play-circle"></i> Visualization Controls</h3>
+                    <div class="button-group">
+                        <button id="visualize-btn">
+                            <i class="fas fa-play"></i> Visualize
+                        </button>
+                        <button id="clear-path-btn">
+                            <i class="fas fa-eraser"></i> Clear Path
+                        </button>
+                        <button id="reset-btn">
+                            <i class="fas fa-redo"></i> Reset Grid
+                        </button>
+                    </div>
+                    <div>
+                        <label for="speed-control">Animation Speed:</label>
+                        <input type="range" id="speed-control" min="1" max="10" value="5">
+                    </div>
+                </div>
+
+                <div class="control-group">
+                    <h3><i class="fas fa-sliders-h"></i> Grid Controls</h3>
+                    <div class="button-group">
+                        <button id="add-walls-btn">
+                            <i class="fas fa-mountain"></i> Add Walls
+                        </button>
+                        <button id="clear-walls-btn">
+                            <i class="fas fa-trash"></i> Clear Walls
+                        </button>
+                    </div>
+                </div>
+
+                
+            </section>
+        </div>
+
+        <section class="info-section">
+            <div id="astar-info" class="algorithm-info active">
+                <h3><i class="fas fa-star"></i> A* Search Algorithm</h3>
+                <div class="difficulty-indicator">
+                    <span>Difficulty Level:</span>
+                    <div class="difficulty-dot medium"></div>
+                    <span>Medium</span>
+                </div>
+                
+                <div class="beginner-friendly">
+                    <h4><i class="fas fa-heart"></i> Beginner-Friendly Explanation</h4>
+                    <p>Imagine you're in a maze and want to find the shortest path to the exit. A* is like having a map that shows both:</p>
+                    <ul>
+                        <li>How far you've already traveled (actual cost)</li>
+                        <li>How close you are to the exit (estimated distance)</li>
+                    </ul>
+                    <p>It smartly combines these two pieces of information to find the best path without wasting time exploring unnecessary routes.</p>
+                </div>
+                
+                <div class="analogy-box">
+                    <h4><i class="fas fa-lightbulb"></i> Real-World Analogy</h4>
+                    <p>Think of A* as a delivery driver who uses GPS. The GPS considers both:</p>
+                    <ul>
+                        <li>The actual distance traveled so far</li>
+                        <li>The straight-line distance to the destination</li>
+                    </ul>
+                    <p>This helps the driver choose the most efficient route, avoiding unnecessary detours.</p>
+                </div>
+                
+                <h4>How It Works:</h4>
+                <ol>
+                    <li>Start from the initial position (green node)</li>
+                    <li>Evaluate neighboring cells based on actual cost + estimated cost to goal</li>
+                    <li>Always expand the most promising node first</li>
+                    <li>Continue until the target (red node) is reached</li>
+                </ol>
+                
+                <h4>When to Use A*:</h4>
+                <ul>
+                    <li>When you need the shortest path</li>
+                    <li>When you have a good estimate of distance to target</li>
+                    <li>In games, GPS navigation, and robotics</li>
+                </ul>
+            </div>
+            
+            <div id="dijkstra-info" class="algorithm-info">
+                <h3><i class="fas fa-road"></i> Dijkstra's Algorithm</h3>
+                <div class="difficulty-indicator">
+                    <span>Difficulty Level:</span>
+                    <div class="difficulty-dot easy"></div>
+                    <span>Easy</span>
+                </div>
+                
+                <div class="beginner-friendly">
+                    <h4><i class="fas fa-heart"></i> Beginner-Friendly Explanation</h4>
+                    <p>Dijkstra's algorithm is like carefully exploring every possible route from your starting point, always moving to the closest unexplored location first.</p>
+                    <p>It guarantees finding the shortest path but might take longer because it explores more evenly in all directions.</p>
+                </div>
+                
+                <div class="analogy-box">
+                    <h4><i class="fas fa-lightbulb"></i> Real-World Analogy</h4>
+                    <p>Imagine water spreading evenly in all directions. Dijkstra spreads out from the start point like water, always reaching the closest points first.</p>
+                    <p>It's like having a cautious explorer who carefully checks every nearby path before moving forward.</p>
+                </div>
+                
+                <h4>How It Works:</h4>
+                <ol>
+                    <li>Start from the initial position</li>
+                    <li>Visit the closest unvisited node</li>
+                    <li>Update distances to neighboring nodes</li>
+                    <li>Repeat until the target is reached</li>
+                </ol>
+                
+                <h4>When to Use Dijkstra:</h4>
+                <ul>
+                    <li>When all paths have the same "cost" or difficulty</li>
+                    <li>When you need the guaranteed shortest path</li>
+                    <li>In network routing and map applications</li>
+                </ul>
+            </div>
+            
+            <div id="bfs-info" class="algorithm-info">
+                <h3><i class="fas fa-expand"></i> Breadth-First Search (BFS)</h3>
+                <div class="difficulty-indicator">
+                    <span>Difficulty Level:</span>
+                    <div class="difficulty-dot easy"></div>
+                    <span>Easy</span>
+                </div>
+                
+                <div class="beginner-friendly">
+                    <h4><i class="fas fa-heart"></i> Beginner-Friendly Explanation</h4>
+                    <p>BFS explores equally in all directions, like ripples spreading out when you drop a stone in water.</p>
+                    <p>It checks all locations at the same distance before moving further away, guaranteeing the shortest path in simple grids.</p>
+                </div>
+                
+                <div class="analogy-box">
+                    <h4><i class="fas fa-lightbulb"></i> Real-World Analogy</h4>
+                    <p>Imagine you're looking for your keys in your house. With BFS, you would check every room on the first floor before going upstairs.</p>
+                    <p>It's a systematic approach that doesn't skip any possible locations.</p>
+                </div>
+                
+                <h4>How It Works:</h4>
+                <ol>
+                    <li>Start from the initial position</li>
+                    <li>Visit all neighboring nodes</li>
+                    <li>Then visit neighbors of those nodes, and so on</li>
+                    <li>Continue layer by layer until target is found</li>
+                </ol>
+                
+                <h4>When to Use BFS:</h4>
+                <ul>
+                    <li>When all moves have the same cost</li>
+                    <li>When you need the shortest path in an unweighted graph</li>
+                    <li>In puzzle solving and social network analysis</li>
+                </ul>
+            </div>
+            
+            <div class="tutorial-section">
+                <h3 class="section-title"><i class="fas fa-book-open"></i> Learning Tutorial</h3>
+                
+                <div class="tutorial-step">
+                    <h4><span class="step-number">1</span> Set Up Your Grid</h4>
+                    <p>Click and drag on the grid to create walls (obstacles). Try creating a simple maze with a clear path from start to end.</p>
+                </div>
+                
+                <div class="tutorial-step">
+                    <h4><span class="step-number">2</span> Choose an Algorithm</h4>
+                    <p>Start with <strong>BFS</strong> (easiest to understand), then try <strong>Dijkstra</strong>, and finally <strong>A*</strong> (most efficient).</p>
+                </div>
+                
+                <div class="tutorial-step">
+                    <h4><span class="step-number">3</span> Visualize and Compare</h4>
+                    <p>Click "Visualize" to see the algorithm in action. Notice how each algorithm explores the grid differently.</p>
+                </div>
+                
+                <div class="tutorial-step">
+                    <h4><span class="step-number">4</span> Experiment and Learn</h4>
+                    <p>Try different wall configurations. Move the start and end points. See how the algorithms perform in different scenarios.</p>
+                </div>
+            </div>
+            
+            <div class="faq-section">
+                <h3 class="section-title"><i class="fas fa-question-circle"></i> Frequently Asked Questions</h3>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Which algorithm is the best?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>It depends on your needs:</p>
+                        <ul>
+                            <li><strong>A*</strong> is usually fastest when you have a good estimate of distance to target</li>
+                            <li><strong>Dijkstra</strong> guarantees the shortest path in weighted graphs</li>
+                            <li><strong>BFS</strong> is simplest and works well for unweighted graphs</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Do I need to know programming to understand this?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Not at all! This visualizer is designed for complete beginners. The explanations use everyday analogies instead of technical jargon.</p>
+                        <p>You can understand how these algorithms work without any coding knowledge.</p>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>Why are there different algorithms for pathfinding?</span>
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div class="faq-answer">
+                        <p>Different situations call for different approaches:</p>
+                        <ul>
+                            <li>Simple mazes might be solved efficiently with BFS</li>
+                            <li>Maps with different terrain costs need Dijkstra</li>
+                            <li>When you have a sense of direction, A* is most efficient</li>
+                        </ul>
+                        <p>It's like having different tools for different jobs!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+    <script src="script.js"></script>
+   
+</body>
+</html>
